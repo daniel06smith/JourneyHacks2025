@@ -4,10 +4,13 @@ from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 from PIL import Image, ImageDraw, ImageFont
 from dotenv import load_dotenv
+import uuid
 
 # Load API key from .env file
 load_dotenv()
 API_KEY = os.getenv('DEEPSEEK_API_KEY')
+if not API_KEY:
+    raise ValueError("API key not found.")
 
 # Allow frontend to communicate with backend
 app = Flask(__name__)
@@ -22,7 +25,7 @@ def generate_letter():
     
     # Mandatory parameters
     sender_name = data.get("sender_name").strip()
-    receipient_name = data.get("receipient_name").strip()
+    recipient_name = data.get("recipient_name").strip()
     confession_type = data.get("confession_type", "").strip().lower()
     length_preference = data.get("length_preference", "").strip().lower()
     
@@ -40,18 +43,18 @@ def generate_letter():
     letter_tone = data.get("letter_tone")
     
     # Checking required fields
-    if not sender_name or not receipient_name or not confession_type:
+    if not sender_name or not recipient_name or not confession_type:
         return jsonify({"error": "Missing required fields."}), 400
     
     # Prepare DeepSeek API prompt based on confession_type
     if confession_type == "confessing":
-        prompt = f"Write a confession letter from sender: {sender_name} to receipient: {receipient_name} with length preference {length_preference}, {letter_mood} mood and {letter_tone} tone."
+        prompt = f"Write a confession letter from sender: {sender_name} to recipient: {recipient_name} with length preference {length_preference}, {letter_mood} mood and {letter_tone} tone."
     elif confession_type == "professing":
-        prompt = f"Write a heartfelt love letter from sender: {sender_name},to receipient: {receipient_name} with length preference {length_preference}, {letter_mood} mood and {letter_tone} tone."
+        prompt = f"Write a heartfelt love letter from sender: {sender_name},to recipient: {recipient_name} with length preference {length_preference}, {letter_mood} mood and {letter_tone} tone."
     
     # Add optional parameters to prompt
     if fav_song:
-        prompt += f" Include a witty line from the receipient's favourite song: {fav_song}."
+        prompt += f" Include a witty line from the recipient's favourite song: {fav_song}."
     if meet:
         prompt += f" Where they first met: {meet}."
     if relationship_status:
@@ -67,8 +70,8 @@ def generate_letter():
         
     # Call DeepSeek API
     payload = {
-        "mode": "deepseek_chat",
-        "message": [{"role": "user", "content": prompt}],
+        "model": "deepseek-chat",
+        "messages": [{"role": "user", "content": prompt}],
         "temperature": 1.5,
         "max_tokens": 400 if length_preference == 'long' else (200 if length_preference == 'medium' else 100)
     }
@@ -76,17 +79,21 @@ def generate_letter():
         "Authorization": f"Bearer {API_KEY}",
         "content-type": "application/json"
     }
+    try: 
+        # Send request to DeepSeek
+        response = requests.post(DEEPSEEK_API_URL, json=payload, headers=headers)
+        response.raise_for_status()
+        response_data = response.json()
+        
+        # Extract response from DeepSeek
+        if "choices" in response_data and response_data["choices"]:
+            letter = response_data["choices"][0]["message"]["content"]
+            return jsonify({"letter": letter.strip()})
+        
+        return jsonoify({"error": "DeepSeek API returned an unexpected response."}), 500
     
-    # Send request to DeepSeek
-    response = requests.post(DEEPSEEK_API_URL, json=payload, headers=headers)
-    response_data = response.json()
-    
-    # Extract response from DeepSeek
-    if "choices" in response_data and response_data["choices"]:
-        letter = response_data["choices"][0]["content"]
-        return jsonify({"letter": letter})
-    
-    return jsonify({"error": "Failed to generate love letter."}), 500
+    except requests.exceptions.RequestException as e:
+        return jsonify({"error": f"DeepSeek API request failed: str{e}"}), 500
 
 # Export the love letter to a PNG card
 @app.route('/export_png', methods=['POST'])
@@ -99,7 +106,6 @@ def export_png():
         return jsonify({"error": "Missing love letter content."}), 400
 
     card_template_path = f"cards/{card_choice}.png"
-    
     if not os.path.exists(card_template_path):
         return jsonify({"error": "Selected card template does not exist."}), 400
     
@@ -118,25 +124,37 @@ def export_png():
     wrapped_text = wrap_text(letter_text, font, max_width)
     draw.multiline_text(text_position, wrapped_text, font=font, fill=text_color)
     
-    output_path = "final_card.png"
+    output_filename = f"love_card_{uuid.uuid4().hex[:8]}.png"
+    output_path = os.path.join("static", output_filename)
     image.save(output_path)
     
     return send_file(output_path, as_attachment=True)
 
 # Function to wrap text based on max width
 def wrap_text(text, font, max_width):
-    lines = []
     words = text.split()
-    while words:
-        line = ""
-        while words and font.getsize(line + words[0])[0] <= max_width:
-            line += words.pop(0) + " "
-        lines.append(line)
+    lines = []
+    current_line = ""
+
+    for word in words:
+        test_line = current_line + " " + word if current_line else word
+        test_width, _ = font.getsize(test_line)
+
+        if test_width <= max_width:
+            current_line = test_line
+        else:
+            lines.append(current_line)
+            current_line = word
+
+    lines.append(current_line)
     return "\n".join(lines)
+
 
 @app.route('/')
 def index():
-    return send_file("static/index.html")
+    if os.path.exists("static/index.html"):
+        return send_file("static/index.html")
+    return jsonify({"Error": "Frontend not found."}), 404
 
 # Error handling
 @app.errorhandler(404)

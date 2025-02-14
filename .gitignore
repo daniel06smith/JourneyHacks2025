@@ -1,0 +1,9 @@
+# Ignore the virtual environment
+venv/
+
+# Ignore API keys
+.env
+
+# Ignore IDE files
+.vscode/
+.idea/

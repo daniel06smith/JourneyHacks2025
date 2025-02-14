@@ -90,7 +90,7 @@ def generate_letter():
             letter = response_data["choices"][0]["message"]["content"]
             return jsonify({"letter": letter.strip()})
         
-        return jsonoify({"error": "DeepSeek API returned an unexpected response."}), 500
+        return jsonify({"error": "DeepSeek API returned an unexpected response."}), 500
     
     except requests.exceptions.RequestException as e:
         return jsonify({"error": f"DeepSeek API request failed: str{e}"}), 500

@@ -1,0 +1,162 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+:root {
+  --primary-color: #daa38f; 
+  --secondary-color: #98a7ae;
+  --beige: #f8f3ef;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+body {
+  max-width: 1280px;
+  margin: 0 auto;
+  background-color: var(--beige);
+  font-family: 'Poppins', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+p {
+  text-align: center;
+  color: var(--black-500)
+}
+
+
+button {
+    border: none;
+    outline: none;
+    padding: 25px 50px;
+    background: var(--primary-color);
+    color: white;
+    font-size: 20px;
+    cursor:pointer;
+    border-radius: 40px;
+}
+
+
+/* TRANSITIONS */
+
+a, .btn {
+  transition: all 300ms ease;
+}
+
+/* CONTAINERS */
+
+.profile-container {
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: normal;
+  align-items: normal;
+  align-content: normal;
+  padding: 20px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+/* ADD INS */
+
+
+/* FOOTER SECTION */
+
+footer {
+  height: 26vh;
+  margin: 0 1rem;
+  padding-top: 20px;
+}
+
+footer p {
+  text-align: center;
+}
+
+form {
+    max-width: 700px;
+    margin: auto;
+    padding: 25px;
+    background: #FCE0E0; /* Soft pink background */
+    border-radius: 15px;
+    box-shadow: 0px 5px 12px rgba(0, 0, 0, 0.15);
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Labels Styling */
+label {
+    display: block;
+    font-size: 16px;
+    color: #9C4A46; /* Deeper pink-brown for contrast */
+    margin-bottom: 6px;
+}
+
+/* Input Box Styling */
+input[type="text"] {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #DA8C90; /* Warm pink border */
+    border-radius: 10px;
+    background: #F5C6C6; /* Soft muted pink */
+    color: #5A3C2A;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Input Box Focus Effect */
+input[type="text"]:focus {
+    border-color: #e9a0a0; /* Vibrant romantic pink */
+    background: #f8f3ef;
+    box-shadow: 0px 0px 10px rgba(231, 149, 184, 0.5);
+}
+
+/* Bold Labels */
+b {
+    font-size: 18px;
+    color: #A04D4D; /* Stronger pinkish-red */
+}
+
+/* Italics Labels */
+i {
+    font-size: 14px;
+    color: #814848;
+}
+
+/* Adjust Spacing Between Fields */
+br {
+    margin-bottom: 10px;
+}
+
+option[type="confess"]:focus{
+    border-color: #ff4d94;
+    background: #ffd6e8;
+    box-shadow: 0px 0px 8px rgba(255, 77, 148, 0.5);
+}
+
+
+h1 {
+    text-align: center;
+    font-size: 2.25rem;
+    flex-grow: 1;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+}
+
+button {
+    border: none;
+    outline: none;
+    padding: 25px 50px;
+    background: var(--primary-color);
+    color: white;
+    font-size: 20px;
+    cursor:pointer;
+    border-radius: 40px;
+    display: block;
+    margin: 20px auto; /* Centers horizontally */
+
+}

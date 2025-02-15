@@ -4,8 +4,8 @@
         <title> 
             A little more info...
         </title>
-        <link rel = "stylesheet" href="css/style.css" />
-        <link rel = "stylesheet" href="css/sections/header.css" />
+        <link rel = "stylesheet" href="css/style2.css" />
+        <link rel = "stylesheet" href="css/sections/header2.css" />
     </head>
 
     <body> 
@@ -33,77 +33,89 @@
         <br>
         <br>
 
-        <form>
+        <form id="loveLetterForm">
             <label for="sender_name"> <b> *Your Name*</b> - <i>What is your first name? </i></label><br>
-            <input type="text" id="sender_name" name="sender_name"><br>
-            
-            <br> 
-
-            <label for="recipient_name"> <b> *Your Partner's Name*</b> - <i> What is your partner's first name? </i></label><br>
-            <input type="text" id="recipiesnt_name" name="recipient_name"><br>
-
-            <br>
+            <input type="text" id="sender_name" name="sender_name" required><br>
         
-
+            <label for="recipient_name"> <b> *Your Partner's Name*</b> - <i>What is your partner's first name? </i></label><br>
+            <input type="text" id="recipient_name" name="recipient_name" required><br>
+        
             <label for="meet"> <b> *Love at first 'site'*</b> - <i>Where did you two first meet?</i></label><br>
             <input type="text" id="meet" name="meet"><br>
-
-            <br>
-
+        
             <label for="fav_song"> <b> *Favourite Song*</b> -<i> What is their favorite song? </i></label><br>
             <input type="text" id="fav_song" name="fav_song"><br>
         
-            <br>
-            
-            <label for="relationship_status"> <b> *Relationship Status*</b></b> - <i>Who are they to you? (i.e. husband, girlfriend etc.) </i></label><br>
+            <label for="relationship_status"> <b> *Relationship Status*</b> - <i>Who are they to you? (i.e. husband, girlfriend etc.) </i></label><br>
             <input type="text" id="relationship_status" name="relationship_status"><br>
-            
-            <br> 
-            <label for ="special_memory"> <b>*Favourite Memory*</b> - <i> - What is your favorite memory together? </i></label><br>
+        
+            <label for="special_memory"> <b>*Favourite Memory*</b> - <i>What is your favorite memory together? </i></label><br>
             <input type="text" id="special_memory" name="special_memory"><br>
-            
-            <br>
-            
+        
             <label for="love_reasons"> <b>*A Thousand Reasons Why*</b><i>Why do you love them? </i></label><br>
-            <input type="text" id="love_reasons" name="love_reasosn"><br>
-            <br>
-            
+            <input type="text" id="love_reasons" name="love_reasons"><br>
+        
             <label for="favourite_things"> <b>*These are a Few of my Favourite Things*</b> - <i>What are some of their favourite things? </i></label><br>
             <input type="text" id="favourite_things" name="favourite_things"><br>
-
-            <br>
-            
+        
             <label for="letter_mood"> <b>*Gotta Set the Mood First* </b> - <i>What would you like the mood of your poem to be?</i> </label><br>
             <input type="text" id="letter_mood" name="letter_mood"><br>
-
-            <br>
-            
+        
             <label for="letter_tone"> <b>*And Finally for the Tone*</b> - <i>What would you like the tone of your poem to be? </i></label><br>
             <input type="text" id="letter_tone" name="letter_tone"><br>
-            <br>
-            <br>
-            <br>
-            <label for="confess_proffess"> To Confess or to Profess... the age old question</label>
-
-
-
-            <select name="confess_proffess" id="confess_proffess">
-                <br>
-                <br>
-                <option value ="Confess"> Confess</option>
-                <option value ="Profess"> Profess</option>
-                <br>
-            </select>
-            <br>
-            <br>
-            <br>
-            
-            <button
-            class ="generate-button" onclick=""> Generate Poem</button>
-
+        
+            <label for="confess_proffess"> <b>To Confess or to Profess...</b> </label><br>
+            <select id="confess_proffess">
+                <option value="confessing">Confess</option>
+                <option value="professing">Profess</option>
+            </select><br><br>
+        
+            <button type="submit" class="generate-button"> Generate Poem</button>
         </form>
-
-        <br>
-
+        
+        <!-- Display the generated letter -->
+        <div id="poemOutput"></div>
+        
+        <script>
+        document.getElementById("loveLetterForm").addEventListener("submit", async function(event) {
+            event.preventDefault(); // Prevent default form submission
+        
+            // Get form data
+            const formData = {
+                sender_name: document.getElementById("sender_name").value,
+                recipient_name: document.getElementById("recipient_name").value,
+                confession_type: document.getElementById("confess_proffess").value,
+                fav_song: document.getElementById("fav_song").value,
+                meet: document.getElementById("meet").value,
+                relationship_status: document.getElementById("relationship_status").value,
+                special_memory: document.getElementById("special_memory").value,
+                love_reasons: document.getElementById("love_reasons").value,
+                favourite_things: document.getElementById("favourite_things").value,
+                letter_mood: document.getElementById("letter_mood").value,
+                letter_tone: document.getElementById("letter_tone").value,
+                length_preference: "medium" // Default to medium length for now
+            };
+        
+            try {
+                // Send data to Flask backend
+                const response = await fetch("http://127.0.0.1:5000/generate-love-letter", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(formData)
+                });
+        
+                const result = await response.json();
+        
+                if (response.ok) {
+                    document.getElementById("poemOutput").innerHTML = `<h2>Your Love Letter:</h2><p>${result.letter}</p>`;
+                } else {
+                    document.getElementById("poemOutput").innerHTML = `<p style="color: red;">Error: ${result.error}</p>`;
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById("poemOutput").innerHTML = `<p style="color: red;">Failed to connect to the server.</p>`;
+            }
+        });
+        </script>
     </body>
 </html>

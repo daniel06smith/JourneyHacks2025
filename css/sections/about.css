@@ -1,0 +1,79 @@
+.about {
+    padding: 50px;
+}
+
+#about {
+    background: white;
+    position: relative;
+    /* padding: 175px 75px 175px 75px; */
+}
+
+.section__text__p1 {
+    font-weight: 600px;
+    text-align: center;
+}
+
+.title {
+    font-size: 3rem;
+    text-align: center;
+    font-family: 'Gaegu', sans-serif;
+}
+
+.icon {
+    width: 50px;
+    height: 50px;
+}
+
+
+.about-containers {
+    gap: 2rem;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+}
+
+.about-details-container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.about-containers, .about-details-container {
+    display: flex;
+}
+
+.about-pic {
+    border-radius: 10px;
+    width: 400px;
+    height: 400px;
+}
+
+.details-container {
+    padding: 1.5rem;
+    flex: 1;
+    background: white;
+    border-radius: 10px;
+    border: rgb(53, 53, 53) 0.1rem solid;
+    border-color: rgb(163, 163, 163);
+    text-align: center;
+}
+
+.about-section-container {
+    display: flex;
+    gap: 4rem;
+    height: 80%;
+    margin: 50px;
+}
+
+.about-section__pic-container {
+    height: 400px;
+    width: 400px;
+    margin: auto 0;
+}
+
+
+
+.details-container h3 {
+    font-size: 30px;
+    font-weight: 800;
+    font-family: 'Gaegu', sans-serif;
+}

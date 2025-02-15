@@ -1,6 +1,6 @@
 import os
 import requests
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, render_template
 from flask_cors import CORS
 from PIL import Image, ImageDraw, ImageFont
 from dotenv import load_dotenv
@@ -149,12 +149,17 @@ def wrap_text(text, font, max_width):
     lines.append(current_line)
     return "\n".join(lines)
 
-
 @app.route('/')
 def index():
-    if os.path.exists("static/index.html"):
-        return send_file("static/index.html")
-    return jsonify({"Error": "Frontend not found."}), 404
+  return render_template("index.html")
+
+@app.route('/about')
+def about():
+    return render_template("about.html")
+
+@app.route('/results')
+def results():
+    return render_template("results.html")
 
 # Error handling
 @app.errorhandler(404)

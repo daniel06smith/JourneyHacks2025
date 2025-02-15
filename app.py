@@ -88,7 +88,7 @@ def generate_letter():
         # Extract response from DeepSeek
         if "choices" in response_data and response_data["choices"]:
             letter = response_data["choices"][0]["message"]["content"]
-            return jsonify({"letter": letter.strip()})
+            return render_template('results.html', letter=letter)
         
         return jsonify({"error": "DeepSeek API returned an unexpected response."}), 500
     
@@ -153,9 +153,9 @@ def wrap_text(text, font, max_width):
 def index():
   return render_template("index.html")
 
-@app.route('/about')
-def about():
-    return render_template("about.html")
+@app.route('/questions')
+def questions():
+    return render_template("questions.html")
 
 @app.route('/results')
 def results():
